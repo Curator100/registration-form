@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gen-Z Registration Form</title>
+    <style>
+        /* General styling for aesthetics */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: url('1.jpg') repeat-y center center;
+            background-size: 3.5in 5in;
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            color: #ff69b4; /* Vibrant Gen-Z color */
+            margin-top: 20px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        label {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        input[type="text"], input[type="number"], .conditional-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .mcq-options input[type="radio"] {
+            margin: 0 10px;
+        }
+
+        .conditional-input {
+            display: none;
+        }
+
+        .submit-btn {
+            background-color: #ff69b4;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #ff1493;
+        }
+
+        .thank-you-message {
+            display: none;
+            font-size: 1.2em;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .thank-you-message a {
+            color: #ff69b4;
+            text-decoration: none;
+        }
+
+        .thank-you-message a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Gen-Z Registration Form!</h1>
+
+    <form id="registrationForm">
+        <!-- Text fields for user information -->
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="college">College/University:</label>
+        <input type="text" id="college" name="college" required>
+
+        <label for="whatsapp">WhatsApp Number:</label>
+        <input type="number" id="whatsapp" name="whatsapp" required>
+
+        <label for="parentsName">Parent's Name and Profession:</label>
+        <input type="text" id="parentsName" name="parentsName" required>
+
+        <label for="parentsPhone">Parent's Phone:</label>
+        <input type="number" id="parentsPhone" name="parentsPhone" required>
+
+        <!-- MCQ with radio buttons -->
+        <label>Your Study Field:</label><br>
+        <div class="mcq-options">
+            <input type="radio" id="science" name="studyField" value="Science" required> Science<br>
+            <input type="radio" id="commerce" name="studyField" value="Commerce"> Commerce<br>
+            <input type="radio" id="arts" name="studyField" value="Arts"> Arts<br>
+            <input type="radio" id="other" name="studyField" value="Others"> Others<br>
+        </div>
+
+        <!-- Conditional input for "Others" option -->
+        <div id="conditionalField" class="conditional-input">
+            <label for="otherField">Your Subject:</label>
+            <input type="text" id="otherField" name="otherField" placeholder="Your subject">
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+
+    <!-- Thank you message after submission -->
+    <div id="thankYouMessage" class="thank-you-message">
+        Thanks for registering! <a href="https://x.com" target="_blank">Click here to chat with the curator.</a>
+    </div>
+
+    <script>
+        // Display conditional input if "Others" is selected
+        document.querySelectorAll('input[name="studyField"]').forEach((input) => {
+            input.addEventListener("change", function() {
+                document.getElementById("conditionalField").style.display = 
+                    this.value === "Others" ? "block" : "none";
+            });
+        });
+
+        // Handle form submission and send data to Telegram
+        document.getElementById("registrationForm").onsubmit = async function(e) {
+            e.preventDefault(); // Prevents actual form submission
+
+            // Collect form data
+            const formData = new FormData(e.target);
+            let message = "New Registration:\n";
+            formData.forEach((value, key) => {
+                message += `${key}: ${value}\n`;
+            });
+
+            // Send data to Telegram bot
+            const botToken = "7447671480:AAFtEWOh_y3k5UpIeUnV-5fJdV3L-RlqC6M";
+            const chatId = "906269717";
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chat_id: chatId, text: message })
+            });
+
+            // Show thank you message and hide form
+            document.getElementById("registrationForm").style.display = "none";
+            document.getElementById("thankYouMessage").style.display = "block";
+        };
+    </script>
+</body>
+</html>
